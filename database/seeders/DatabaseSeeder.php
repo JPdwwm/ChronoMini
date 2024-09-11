@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
             RecordSeeder::class,
             TotalSeeder::class,
             MessageSeeder::class,
-            ReportSeeder::class
         ]);
     }
 }

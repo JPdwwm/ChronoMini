@@ -22,7 +22,10 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'role_id'
+        'role_id',
+        'address',
+        'zip_code',
+        'city'
     ];
 
     /**
@@ -35,9 +38,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role_id == 1;
+    }
+
     public function kids()
     {
-        return $this->hasMany(Kid::class);
+        return $this->belongsToMany(Kid::class, 'kid_user');
     }
 
     public function records()

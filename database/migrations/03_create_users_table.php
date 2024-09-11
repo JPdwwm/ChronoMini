@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('address')->nullable();
@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            // Ajout d'une contrainte d'unicité sur la combinaison email + role_id
+            $table->unique(['email', 'role_id']);
 
             // clé étrangére role_id
             $table->foreignId('role_id')->constrained();

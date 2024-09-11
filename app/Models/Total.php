@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Total extends Model
 {
     use HasFactory;
+
+    public function kid()
+    {
+        return $this->belongsTo(Kid::class);
+    }
 }
