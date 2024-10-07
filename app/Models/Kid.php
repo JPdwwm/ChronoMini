@@ -24,9 +24,4 @@ class Kid extends Model
     {
         return $this->hasMany(Record::class);
     }
-
-    public function totals()
-    {
-        return $this->hasMany(Total::class);
-    }
 }

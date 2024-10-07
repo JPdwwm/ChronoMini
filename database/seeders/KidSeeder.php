@@ -15,10 +15,15 @@ class KidSeeder extends Seeder
      */
     public function run(): void
     {
-     // Création d'un enfant'
-    Kid::create([
-        'first_name' => 'César',
-        'birth_date' => Carbon::create('2021', '05', '16'),
-    ]);   
+        // Crée 10 enfants aléatoires
+        $kids = Kid::factory()->count(10)->create();
+
+        // Récupère les utilisateurs avec les IDs 2 et 3
+        $users = User::whereIn('id', [2, 3])->get();
+
+        // Associe chaque enfant aux utilisateurs 2 et 3 dans la table pivot
+        foreach ($users as $user) {
+            $user->kids()->attach($kids->pluck('id')->toArray());
+        }
     }
 }

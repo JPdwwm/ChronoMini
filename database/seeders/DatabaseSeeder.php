@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             KidSeeder::class,
             RecordSeeder::class,
-            TotalSeeder::class,
             MessageSeeder::class,
         ]);
     }
