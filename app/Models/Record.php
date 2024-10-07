@@ -9,6 +9,15 @@ class Record extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'drop_hour',
+        'pick_up_hour',
+        'amount_hours',
+        'date',
+        'drop_status', 
+        'pick_up_status' 
+    ];
+
     public function kid()
     {
         return $this->belongsTo(Kid::class);

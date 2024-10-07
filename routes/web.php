@@ -8,4 +8,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
