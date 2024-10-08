@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        // Vérifiez que l'utilisateur est autorisé à voir la liste de tous les utilisateurs
+        $this->authorize('viewAll', User::class);
+
         // On récupère tous les utilisateurs
         $users = User::all();
         
@@ -23,19 +26,13 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        
-    }
-    
-
-    /**
      * Display the specified resource.
      */
     public function show($id)
     {
+        // Vérifiez que l'utilisateur est autorisé à voir les informations d'un seul utilisateur
+        $this->authorize('viewOne', User::class);
+
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -43,28 +40,27 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-/**
- * Update the specified resource in storage.
- */
-public function update(Request $request, $id)
-{
-    // Vérifiez que l'utilisateur est autorisé à mettre à jour ce modèle
-    $this->authorize('update', User::class);
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        // Vérifiez que l'utilisateur est autorisé à mettre à jour ce modèle
+        $this->authorize('update', User::class);
 
-    // Trouvez l'utilisateur par ID
-    $user = User::find($id);
+        // Trouvez l'utilisateur par ID
+        $user = User::find($id);
 
-    // Retournez une erreur 404 si l'utilisateur n'existe pas
-    if (!$user) {
+        // Retournez une erreur 404 si l'utilisateur n'existe pas
+        if (!$user) {
         return response()->json(['message' => 'User not found'], 404);
-    }
+        }
 
-    // Validation des données fournies dans la requête
-    $validatedData = $request->validate([
+        // Validation des données fournies dans la requête
+        $validatedData = $request->validate([
         'first_name' => 'sometimes|string|max:255',
         'last_name' => 'sometimes|string|max:255',
-        'email' => 'sometimes|email|unique:users,email,' . $user->id,
-        'password' => 'sometimes|string|min:8|confirmed',
+        'email' => 'sometimes|',
         'city' => 'sometimes|nullable|string|max:255',
         'zip_code' => 'sometimes|nullable|string|max:10'
     ]);
@@ -89,7 +85,24 @@ public function update(Request $request, $id)
     return response()->json([
         'message' => 'User successfully updated'
     ], 200);
-}
+    }
 
-    
+    public function destroy($id)
+    {
+    $user = User::find($id);
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Vérifie si l'utilisateur est autorisé à supprimer
+    $this->authorize('delete', $user);
+
+    // Supprime l'utilisateur
+    $user->delete();
+
+    return response()->json([
+        'message' => 'User successfully deleted'
+    ], 200);
+    }
+
 }

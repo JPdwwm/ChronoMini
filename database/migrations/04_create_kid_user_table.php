@@ -17,8 +17,9 @@ return new class extends Migration
 
             // clé étrangére kid_id et user_id
 
-            $table->foreignId('kid_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('kid_id')->constrained()->onDelete('cascade');
+
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
         });
     }
 
