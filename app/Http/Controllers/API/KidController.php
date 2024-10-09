@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Kid;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class KidController extends Controller
 {
@@ -13,7 +16,14 @@ class KidController extends Controller
      */
     public function index()
     {
-        //
+        // Vérifiez que l'utilisateur est autorisé à voir la liste de tous les utilisateurs
+        $this->authorize('viewAllKids', Kid::class);
+
+        // On récupère tous les utilisateurs
+        $kids = Kid::all();
+                
+        // On retourne les informations des utilisateurs en format JSON
+        return response()->json($kids);
     }
 
     /**
@@ -35,10 +45,16 @@ class KidController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kid $kid)
+    public function myKids()
     {
-        //
+    
+        $userId = Auth::id();
+        $user = User::find($userId);
+
+        return response()->json($user->kids); // Retourne les enfants au format JSON
     }
+
+
 
     /**
      * Show the form for editing the specified resource.

@@ -30,7 +30,7 @@ class ProfileController extends Controller
         $user = User::find($id);
     
         // Vérifiez l'autorisation avant de mettre à jour
-        $this->authorize('updateOwnProfile', [$user, $user]);
+        $this->authorize('updateMe', [$user, $user]);
     
         // Validation des données fournies dans la requête
         $validatedData = $request->validate([

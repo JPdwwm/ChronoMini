@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->foreignId('kid_id')->constrained()->onDelete('cascade');
 
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
         });
     }
 

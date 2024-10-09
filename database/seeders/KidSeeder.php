@@ -15,15 +15,15 @@ class KidSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crée 10 enfants aléatoires
-        $kids = Kid::factory()->count(10)->create();
+        // Crée 15 enfants aléatoires
+        $kids = Kid::factory()->count(15)->create();
 
         // Récupère les utilisateurs avec les IDs 2 et 3
         $users = User::whereIn('id', [2, 3])->get();
 
         // Associe chaque enfant aux utilisateurs 2 et 3 dans la table pivot
-        foreach ($users as $user) {
-            $user->kids()->attach($kids->pluck('id')->toArray());
+        foreach ($kids as $kid) {
+            $kid->users()->attach($users->pluck('id')->toArray());
         }
     }
 }

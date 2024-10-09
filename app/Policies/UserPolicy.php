@@ -50,7 +50,7 @@ class UserPolicy
     /**
      * Autorisation pour un utilisateur de mettre à jour son propre profil.
      */
-    public function updateOwnProfile(User $user, User $targetUser)
+    public function updateMe(User $user, User $targetUser)
     {
         return $user->id === $targetUser->id; // Un utilisateur peut mettre à jour son propre profil
     }
