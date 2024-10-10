@@ -27,56 +27,88 @@ class KidController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function createKid(Request $request)
     {
-        //
+        // Get authenticated user
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        // Validation des données d'entrée
+        $validatedData = $request->validate([
+        'first_name' => 'required|string|max:255',
+        'birth_date' => 'required|date',
+        ]);
+
+        // Créer un nouvel enfant avec les données validées
+        $kid = Kid::create($validatedData);
+
+        // Associer l'enfant à l'utilisateur authentifié
+        $user->kids()->attach($kid->id);
+
+        return response()->json($kid, 201); // 201 Created
     }
 
     /**
      * Display the specified resource.
      */
-    public function myKids()
+    public function showMyKids()
     {
-    
-        $userId = Auth::id();
-        $user = User::find($userId);
+        // Get authenticated user
+        $id = Auth::user()->id;
+        $user = User::find($id);
 
-        return response()->json($user->kids); // Retourne les enfants au format JSON
-    }
-
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Kid $kid)
-    {
-        //
+        if ($user->kids->isEmpty()) {
+            return response()->json(['message' => 'No kids found.'], 200); // OK avec message
+        }
+        return response()->json($user->kids); 
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kid $kid)
+    public function updateKid(Request $request, Kid $kid)
     {
-        //
+        // policy vérifiant que l'utilisateur est authentifié (avec role parent) et qu'il est bien lié a l'enfant 
+        $this->authorize('updateKid', $kid);
+
+        $validatedData = $request->validate([
+            'first_name' => 'sometimes|required|string|max:255',
+            'birth_date' => 'sometimes|required|date',
+        ]);
+
+        $kid->update($validatedData);
+
+        return response()->json([
+            'message' => 'Kid successfully updated',
+            'kid' => $kid
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kid $kid)
+    public function deleteKid(Kid $kid)
     {
-        //
+
+        $this->authorize('deleteKid', $kid);
+
+        $id = Auth::user()->id;
+        $user = User::find($id);
+    
+        // Détacher l'enfant de l'utilisateur
+        $user->kids()->detach($kid->id);
+    
+        // Vérifie si l'enfant est toujours rattaché à d'autres utilisateurs
+        $remainingAssociations = $kid->users()->count();
+    
+        // S'il n'y a plus d'associations, on peut supprimer l'enfant de la base de données
+        if ($remainingAssociations === 0) {
+            $kid->delete();
+            return response()->json(['message' => 'Kid successfully deleted.'], 200);
+        }else{
+            return response()->json(['message' => 'Kid successfully detached from user.'], 200);
+        }
     }
 }

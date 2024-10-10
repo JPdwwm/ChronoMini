@@ -23,7 +23,7 @@ class KidPolicy
     public function updateKid(User $user, Kid $kid)
     {
         // Vérifier que l'utilisateur est un parent et qu'il est lié à l'enfant
-        return $user->isParent() && $user->kids()->where('kid_id', $kid->id)->exists();
+        return $user->isParent() && $user->kids()->where('kids.id', $kid->id)->exists();
     }
 
     public function detachKid(User $user, Kid $kid)
@@ -35,6 +35,6 @@ class KidPolicy
     public function deleteKid(User $user, Kid $kid)
     {
         // Seul un administrateur peut supprimer directement un enfant de la base de données
-        return $user->isAdmin();
+        return $user->isParent() && $user->kids()->where('kids.id', $kid->id)->exists();
     }
 }

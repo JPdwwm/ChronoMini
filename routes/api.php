@@ -19,6 +19,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/user/delete', [ProfileController::class, 'destroy']);
 
     Route::get('/kids', [KidController::class, 'index']);
-    Route::get('/mykids', [KidController::class, 'myKids']);
+    Route::get('/mykids', [KidController::class, 'showMyKids']);
+    Route::post('/createkid', [KidController::class, 'createKid']);
+    Route::put('/updatekid/{kid}', [KidController::class, 'updateKid']);
+    Route::delete('/deletekid/{kid}', [KidController::class, 'deleteKid']);
 });
 
