@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('breaks', function (Blueprint $table) {
+        Schema::create('time_breaks', function (Blueprint $table) {
             $table->id();
             $table->time('break_start');
-            $table->time('break_end')->nullable(); // Nullable si la pause est en cours 
+            $table->time('break_end')->nullable();
             $table->float('total')->nullable();
             $table->timestamps();
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('breaks');
+        Schema::dropIfExists('time_breaks');
     }
 };
