@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\KidController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\RecordController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\RegisterController;
 
@@ -20,8 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/kids', [KidController::class, 'index']);
     Route::get('/mykids', [KidController::class, 'showMyKids']);
+    Route::get('/mykid/{kid}', [KidController::class, 'showOneKid']);
     Route::post('/createkid', [KidController::class, 'createKid']);
     Route::put('/updatekid/{kid}', [KidController::class, 'updateKid']);
     Route::delete('/deletekid/{kid}', [KidController::class, 'deleteKid']);
+
+    Route::get('/records', [RecordController::class, 'index']);
 });
 

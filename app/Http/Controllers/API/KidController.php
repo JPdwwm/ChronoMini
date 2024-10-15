@@ -50,6 +50,19 @@ class KidController extends Controller
         return response()->json($kid, 201); // 201 Created
     }
 
+    public function showOneKid(Kid $kid){
+
+        $this->authorize('showOneKid', $kid, Kid::class);
+
+        $kid = Kid::find($kid);
+
+        if (!$kid) {
+            return response()->json(['message' => 'Kid not found'], 404);
+        }
+
+        return response()->json($kid);
+    }
+
     /**
      * Display the specified resource.
      */
@@ -71,7 +84,7 @@ class KidController extends Controller
     public function updateKid(Request $request, Kid $kid)
     {
         // policy vérifiant que l'utilisateur est authentifié (avec role parent) et qu'il est bien lié a l'enfant 
-        $this->authorize('updateKid', $kid);
+        $this->authorize('updateKid', $kid, Kid::class);
 
         $validatedData = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',

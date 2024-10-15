@@ -14,7 +14,7 @@ class KidPolicy
         return $user->isAdmin();
     }
 
-    public function viewOneKid(User $user, Kid $kid)
+    public function showOneKid(User $user, Kid $kid)
     {
         // Un utilisateur peut voir un enfant s'il est lié à cet enfant (via la table pivot)
         return $user->kids()->where('kid_id', $kid->id)->exists() || $user->isAdmin();
