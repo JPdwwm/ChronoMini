@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->time('drop_hour');
-            $table->time('pick_up_hour');
-            $table->float('amount_hours');
-            $table->tinyInteger('drop_status');
-            $table->tinyInteger('pick_up_status');
+            $table->time('pick_up_hour')->nullable();
+            $table->float('amount_hours')->nullable();
+            $table->tinyInteger('drop_status')->nullable();
+            $table->tinyInteger('pick_up_status')->nullable();
             $table->date('date');
             
 

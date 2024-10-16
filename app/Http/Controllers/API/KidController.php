@@ -50,7 +50,8 @@ class KidController extends Controller
         return response()->json($kid, 201); // 201 Created
     }
 
-    public function showOneKid(Kid $kid){
+    public function showOneKid(Kid $kid)
+    {
 
         $this->authorize('showOneKid', $kid, Kid::class);
 

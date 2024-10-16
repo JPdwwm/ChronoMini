@@ -27,5 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/deletekid/{kid}', [KidController::class, 'deleteKid']);
 
     Route::get('/records', [RecordController::class, 'index']);
+    Route::post('/{kid}/record/start', [RecordController::class, 'startRecording']);
+    Route::post('/{kid}/record/stop', [RecordController::class, 'stopRecording']);
+    Route::get('/myrecords', [RecordController::class, 'showMyRecords']);
+
 });
 

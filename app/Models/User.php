@@ -53,6 +53,11 @@ class User extends Authenticatable
         return $this->role_id ==2;
     }
 
+    public function isAsmat()
+    {
+        return $this->role_id ==3;
+    }
+
     public function kids()
     {
         return $this->belongsToMany(Kid::class, 'kid_user');

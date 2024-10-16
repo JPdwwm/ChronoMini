@@ -10,6 +10,8 @@ class Record extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'kid_id',
         'drop_hour',
         'pick_up_hour',
         'amount_hours',
