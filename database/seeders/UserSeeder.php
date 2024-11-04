@@ -24,7 +24,8 @@ class UserSeeder extends Seeder
         'email' => 'admin@jp.fr',
         'email_verified_at' => now(),
         'remember_token' => Str::random(10),
-        'role_id' => 1
+        'role_id' => 1,
+        'token' => Str::random(40)
     ]);
     
     // Création d'un user parent de test
@@ -38,7 +39,8 @@ class UserSeeder extends Seeder
         'zip_code' => '79000',
         'email_verified_at' => now(),
         'remember_token' => Str::random(10),
-        'role_id' => 2
+        'role_id' => 2,
+        'token' => Str::random(40)
     ]);
 
     // Création d'un user asmat parent de test
@@ -49,7 +51,8 @@ class UserSeeder extends Seeder
         'email' => 'asmat@jp.fr',
         'email_verified_at' => now(),
         'remember_token' => Str::random(10),
-        'role_id' => 3
+        'role_id' => 3,
+        'token' => Str::random(40)
     ]);
     }
 }

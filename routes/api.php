@@ -11,6 +11,7 @@ use App\Http\Controllers\API\RegisterController;
 
 // Route publique pour l'enregistrement
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::post('/verification', [RegisterController::class, 'verification'])->name('verificaiton');
 
 // Groupe de routes protégées par le middleware 'auth:sanctum'
 Route::middleware('auth:sanctum')->group(function () {

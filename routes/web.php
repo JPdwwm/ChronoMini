@@ -9,3 +9,4 @@ Route::get('/', function () {
 });
 
 Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
+
