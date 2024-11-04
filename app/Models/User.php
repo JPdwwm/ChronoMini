@@ -50,12 +50,12 @@ class User extends Authenticatable
 
     public function isParent()
     {
-        return $this->role_id ==2;
+        return $this->role_id == 2;
     }
 
     public function isAsmat()
     {
-        return $this->role_id ==3;
+        return $this->role_id == 3;
     }
 
     public function kids()

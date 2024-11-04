@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TimeBreak extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'break_start',
+        'break_end',
+        'total',
+        'record_id'
+    ];
 }

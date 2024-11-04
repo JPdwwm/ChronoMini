@@ -49,7 +49,7 @@ class RecordController extends Controller
         $user = Auth::user();
     
         // Vérifier que l'utilisateur est autorisé à enregistrer la dépose pour cet enfant
-        // $this->authorize('create', Record::class);
+        $this->authorize('startRecording', Record::class);
     
         // Vérifier s'il y a déjà un enregistrement en cours pour cet enfant
         $activeRecord = Record::where('kid_id', $kid->id)
@@ -78,10 +78,10 @@ class RecordController extends Controller
 
     public function stopRecording(Kid $kid)
     {
-        // Récupère l'utilisateur authentifié
         $user = Auth::user();
+
+        $this->authorize('stopRecording', [Record::class, $kid]);
         
-        // Vérifier qu'il existe un enregistrement actif pour cet enfant
         $activeRecord = Record::where('kid_id', $kid->id)
                               ->whereNull('pick_up_hour')
                               ->first();
@@ -90,46 +90,38 @@ class RecordController extends Controller
             return response()->json(['message' => 'No active record found for this child.'], 404);
         }
     
-        // Mettre à jour l'heure de reprise
-        $activeRecord->pick_up_hour = now()->toTimeString(); // ou une heure spécifique
-        $activeRecord->save(); // Enregistrer les modifications
-    
-        // Calculer la durée de garde
-        $dropHour = \Carbon\Carbon::parse($activeRecord->drop_hour);
-        $pickUpHour = Carbon::now();
-        $amountMinutes = $dropHour->diffInMinutes($pickUpHour);
-        $amountHours = $amountMinutes / 60; // Convertir en heures
-    
-        // Mettre à jour le champ amount_hours
-        $activeRecord->amount_hours = $amountHours;
+        $activeRecord->pick_up_hour = now()->toTimeString();
         $activeRecord->save();
     
-        // Supposons que $amountHours contient ta valeur en heures décimales
-        $amountHours = $activeRecord->amount_hours;
-
-        // Obtenir le nombre d'heures entières
-        $hours = floor($amountHours);
-
-        // Obtenir le nombre de minutes (en prenant la partie décimale)
-        $minutes = round(($amountHours - $hours) * 60);
-
-        // Affichage des résultats
+        // Calcul de la durée en heures et minutes
+        $dropHour = Carbon::parse($activeRecord->drop_hour);
+        $pickUpHour = Carbon::now();
+        $durationInMinutes = $dropHour->diffInMinutes($pickUpHour);
+    
+        // Calcul des heures et minutes
+        $hours = floor($durationInMinutes / 60);
+        $minutes = $durationInMinutes % 60;
+    
+        // Mise à jour en heures décimales
+        $activeRecord->amount_hours = $durationInMinutes / 60;
+        $activeRecord->save();
+    
         return response()->json([
             'message' => 'Drop-off successfully stopped',
             'record' => $activeRecord,
             'duration' => [
-            'hours' => $hours,
-            'minutes' => $minutes]], 200);
+                'hours' => $hours,
+                'minutes' => $minutes
+            ]
+        ], 200);
     }
-
+    
     /**
      * Display the specified resource.
      */
     public function showOneRecord(Record $record)
     {   
         $this->authorize('showOneRecord', $record);
-        
-        $record = Record::find($record);
 
         if (!$record) {
             return response()->json(['message' => 'Record not found'], 404);
@@ -143,7 +135,17 @@ class RecordController extends Controller
      */
     public function updateRecord(Request $request, Record $record)
     {
-        //
+        $this->authorize('update', $record);
+    
+        $validated = $request->validate([
+            'drop_hour' => 'sometimes|date_format:H:i:s',
+            'pick_up_hour' => 'sometimes|date_format:H:i:s',
+            'amount_hours' => 'sometimes|numeric|min:0',
+        ]);
+    
+        $record->update($validated);
+    
+        return response()->json(['message' => 'Record updated successfully', 'record' => $record]);
     }
 
     /**
@@ -151,6 +153,10 @@ class RecordController extends Controller
      */
     public function deleteRecord(Record $record)
     {
-        //
+        $this->authorize('delete', $record);
+    
+        $record->delete();
+    
+        return response()->json(['message' => 'Record deleted successfully']);
     }
 }

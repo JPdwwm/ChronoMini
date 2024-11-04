@@ -39,5 +39,22 @@ class RecordPolicy
         return $isAuthorizedRole && $isLinkedToKid;
     }
 
-    
+    public function stopRecording(User $user, Kid $kid)
+    {
+        // Autoriser seulement si l'utilisateur est parent ou assistant maternel associé à l'enfant
+        return ($user->isParent() || $user->isAsmat()) && $user->kids->contains($kid);
+    }
+
+    public function update(User $user, Record $record)
+    {
+        // Autorise seulement l'admin ou l'utilisateur associé à l'enregistrement
+        return $user->id === $record->user_id;
+    }
+
+    public function delete(User $user, Record $record)
+    {
+        // Autorise seulement l'admin ou l'utilisateur associé à l'enregistrement
+        return $user->id === $record->user_id;
+    }
+
 }
